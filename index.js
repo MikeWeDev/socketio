@@ -13,8 +13,10 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 app.get("/", (req, res) => res.sendFile(join(__dirname, "index.html")));
 
-io.on("connection",()=>{
+io.on("connection",(socket)=>{
     console.log("A user connected");
+    socket.emit("message","welcome nigga ")
+   
 })
 
 const port = 3000;
