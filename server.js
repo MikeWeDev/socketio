@@ -18,9 +18,18 @@ const io = new Server(server, {
 io.on("connection", (socket) => {
   console.log("User connected:", socket.id);
 
+
+ socket.on("message", (message) => {
+  console.log(message);
+
+  io.emit("message", message);
+});
+
   socket.on("disconnect", () => {
     console.log("User disconnected:", socket.id);
   });
+
+  
 });
 
 server.listen(3001, () => {
