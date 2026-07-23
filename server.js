@@ -23,11 +23,14 @@ io.on("connection", (socket) => {
   console.log("User connected:", socket.id);
   console.log("Connected users:", connectedUsers);
 
+
   socket.on("message", (message) => {
     console.log(message);
 
-    io.emit("message", message);
+    // send to everyone except sender
+    socket.broadcast.emit("message", message);
   });
+
 
   socket.on("disconnect", () => {
     connectedUsers--;
@@ -36,6 +39,7 @@ io.on("connection", (socket) => {
     console.log("Connected users:", connectedUsers);
   });
 });
+
 
 server.listen(3001, () => {
   console.log("Server running on port 3001");
