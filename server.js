@@ -15,21 +15,26 @@ const io = new Server(server, {
   },
 });
 
+let connectedUsers = 0;
+
 io.on("connection", (socket) => {
+  connectedUsers++;
+
   console.log("User connected:", socket.id);
+  console.log("Connected users:", connectedUsers);
 
+  socket.on("message", (message) => {
+    console.log(message);
 
- socket.on("message", (message) => {
-  console.log(message);
-
-  io.emit("message", message);
-});
-
-  socket.on("disconnect", () => {
-    console.log("User disconnected:", socket.id);
+    io.emit("message", message);
   });
 
-  
+  socket.on("disconnect", () => {
+    connectedUsers--;
+
+    console.log("User disconnected:", socket.id);
+    console.log("Connected users:", connectedUsers);
+  });
 });
 
 server.listen(3001, () => {
