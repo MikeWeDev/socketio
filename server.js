@@ -27,7 +27,6 @@ io.on("connection", (socket) => {
   socket.on("message", (message) => {
     console.log(message);
 
-    // send to everyone except sender
     socket.broadcast.emit("message", message);
   });
 
