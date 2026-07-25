@@ -23,6 +23,8 @@ io.on("connection", (socket) => {
   console.log("User connected:", socket.id);
   console.log("Connected users:", connectedUsers);
 
+  io.emit("online-users", connectedUsers);
+
   socket.on("message", (message) => {
     console.log(message);
 
@@ -34,6 +36,8 @@ io.on("connection", (socket) => {
 
     console.log("User disconnected:", socket.id);
     console.log("Connected users:", connectedUsers);
+
+    io.emit("online-users", connectedUsers);
   });
 });
 
