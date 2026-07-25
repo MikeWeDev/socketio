@@ -21,23 +21,45 @@ io.on("connection", (socket) => {
   connectedUsers++;
 
   console.log("User connected:", socket.id);
-  console.log("Connected users:", connectedUsers);
 
   io.emit("online-users", connectedUsers);
 
-  socket.on("message", (message) => {
-    console.log(message);
+  socket.on("join", (username: string) => {
+    socket.data.username = username;
 
+    io.emit("message", {
+      username: "System",
+      text: `${username} joined the chat`,
+      time: new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+      system: true,
+    });
+  });
+
+  socket.on("message", (message) => {
     socket.broadcast.emit("message", message);
   });
 
   socket.on("disconnect", () => {
     connectedUsers--;
 
-    console.log("User disconnected:", socket.id);
-    console.log("Connected users:", connectedUsers);
-
     io.emit("online-users", connectedUsers);
+
+    if (socket.data.username) {
+      io.emit("message", {
+        username: "System",
+        text: `${socket.data.username} left the chat`,
+        time: new Date().toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+        system: true,
+      });
+    }
+
+    console.log("User disconnected:", socket.id);
   });
 });
 
