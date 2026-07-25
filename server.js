@@ -24,7 +24,8 @@ io.on("connection", (socket) => {
 
   io.emit("online-users", connectedUsers);
 
-  socket.on("join", (username: string) => {
+
+  socket.on("join", (username) => {
     socket.data.username = username;
 
     io.emit("message", {
@@ -38,14 +39,17 @@ io.on("connection", (socket) => {
     });
   });
 
+
   socket.on("message", (message) => {
     socket.broadcast.emit("message", message);
   });
+
 
   socket.on("disconnect", () => {
     connectedUsers--;
 
     io.emit("online-users", connectedUsers);
+
 
     if (socket.data.username) {
       io.emit("message", {
@@ -59,10 +63,12 @@ io.on("connection", (socket) => {
       });
     }
 
+
     console.log("User disconnected:", socket.id);
   });
 });
 
+
 server.listen(3000, () => {
-  console.log("Server running on port 3001");
+  console.log("Server running on port 3000");
 });
