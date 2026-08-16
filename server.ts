@@ -24,8 +24,7 @@ io.on("connection", (socket) => {
 
   io.emit("online-users", connectedUsers);
 
-
-  socket.on("join", (username) => {
+  socket.on("join", (username: string) => {
     socket.data.username = username;
 
     io.emit("message", {
@@ -39,17 +38,23 @@ io.on("connection", (socket) => {
     });
   });
 
-
   socket.on("message", (message) => {
-    socket.broadcast.emit("message", message);
+    io.emit("message", message);
   });
 
+  socket.on("typing", (isTyping: boolean) => {
+    if (socket.data.username) {
+      socket.broadcast.emit("user-typing", {
+        username: socket.data.username,
+        isTyping,
+      });
+    }
+  });
 
   socket.on("disconnect", () => {
-    connectedUsers--;
+    connectedUsers = Math.max(0, connectedUsers - 1);
 
     io.emit("online-users", connectedUsers);
-
 
     if (socket.data.username) {
       io.emit("message", {
@@ -61,14 +66,19 @@ io.on("connection", (socket) => {
         }),
         system: true,
       });
-    }
 
+      socket.broadcast.emit("user-typing", {
+        username: socket.data.username,
+        isTyping: false,
+      });
+    }
 
     console.log("User disconnected:", socket.id);
   });
 });
 
+const PORT = process.env.PORT || 3000;
 
-server.listen(3000, () => {
-  console.log("Server running on port 3000");
+server.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
