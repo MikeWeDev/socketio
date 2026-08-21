@@ -5,9 +5,16 @@ import cors from "cors";
 
 const app = express();
 
+const PORT = process.env.PORT || 3000;
+const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:5173";
+
 let connectedUsers = 0;
 
-app.use(cors());
+app.use(
+  cors({
+    origin: CLIENT_URL,
+  })
+);
 
 app.get("/health", (_req, res) => {
   res.status(200).json({
@@ -27,10 +34,9 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: CLIENT_URL,
   },
 });
-
 
 io.on("connection", (socket) => {
   connectedUsers++;
@@ -39,18 +45,18 @@ io.on("connection", (socket) => {
 
   io.emit("online-users", connectedUsers);
 
- socket.on("join", (username: string) => {
-  const trimmedUsername = username.trim();
+  socket.on("join", (username: string) => {
+    const trimmedUsername = username.trim();
 
-  if (!trimmedUsername || socket.data.username === trimmedUsername) {
-    return;
-  }
+    if (!trimmedUsername || socket.data.username === trimmedUsername) {
+      return;
+    }
 
-  socket.data.username = trimmedUsername;
+    socket.data.username = trimmedUsername;
 
-  io.emit("message", {
+    io.emit("message", {
       username: "System",
-      text: `${username} joined the chat`,
+      text: `${trimmedUsername} joined the chat`,
       time: new Date().toLocaleTimeString([], {
         hour: "2-digit",
         minute: "2-digit",
@@ -60,6 +66,10 @@ io.on("connection", (socket) => {
   });
 
   socket.on("message", (message) => {
+    if (!message || typeof message !== "object") {
+      return;
+    }
+
     io.emit("message", message);
   });
 
@@ -67,7 +77,7 @@ io.on("connection", (socket) => {
     if (socket.data.username) {
       socket.broadcast.emit("user-typing", {
         username: socket.data.username,
-        isTyping,
+        isTyping: Boolean(isTyping),
       });
     }
   });
@@ -97,8 +107,6 @@ io.on("connection", (socket) => {
     console.log("User disconnected:", socket.id);
   });
 });
-
-const PORT = process.env.PORT || 3000;
 
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
