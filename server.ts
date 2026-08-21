@@ -32,10 +32,16 @@ io.on("connection", (socket) => {
 
   io.emit("online-users", connectedUsers);
 
-  socket.on("join", (username: string) => {
-    socket.data.username = username;
+ socket.on("join", (username: string) => {
+  const trimmedUsername = username.trim();
 
-    io.emit("message", {
+  if (!trimmedUsername || socket.data.username === trimmedUsername) {
+    return;
+  }
+
+  socket.data.username = trimmedUsername;
+
+  io.emit("message", {
       username: "System",
       text: `${username} joined the chat`,
       time: new Date().toLocaleTimeString([], {
