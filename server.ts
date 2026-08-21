@@ -16,6 +16,13 @@ app.get("/health", (_req, res) => {
   });
 });
 
+app.get("/status", (_req, res) => {
+  res.status(200).json({
+    message: "Chat server is running",
+    connectedUsers,
+  });
+});
+
 const server = http.createServer(app);
 
 const io = new Server(server, {
