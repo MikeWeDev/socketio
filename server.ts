@@ -7,6 +7,7 @@ const app = express();
 
 const PORT = process.env.PORT || 3000;
 const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:5173";
+const SERVER_VERSION = "1.0.0";
 
 let connectedUsers = 0;
 
@@ -19,6 +20,7 @@ app.use(
 app.get("/health", (_req, res) => {
   res.status(200).json({
     status: "ok",
+    version: SERVER_VERSION,
     users: connectedUsers,
   });
 });
