@@ -21,8 +21,13 @@ app.get("/health", (_req, res) => {
   res.status(200).json({
     status: "ok",
     version: SERVER_VERSION,
+    uptime: process.uptime(),
     users: connectedUsers,
   });
+});
+
+app.get("/version", (_req, res) => {
+  res.status(200).json({ version: SERVER_VERSION });
 });
 
 app.get("/status", (_req, res) => {
