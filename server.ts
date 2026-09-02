@@ -79,6 +79,11 @@ io.on("connection", (socket) => {
       return;
     }
 
+    const MAX_MESSAGE_LENGTH = 500;
+    if (typeof message.text === "string" && message.text.length > MAX_MESSAGE_LENGTH) {
+      message.text = message.text.substring(0, MAX_MESSAGE_LENGTH);
+    }
+
     io.emit("message", message);
   });
 
