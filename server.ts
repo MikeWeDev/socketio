@@ -23,6 +23,7 @@ app.get("/health", (_req, res) => {
     version: SERVER_VERSION,
     uptime: process.uptime(),
     users: connectedUsers,
+    timestamp: new Date().toISOString(),
   });
 });
 
