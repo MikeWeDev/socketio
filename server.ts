@@ -34,6 +34,7 @@ app.get("/status", (_req, res) => {
   res.status(200).json({
     message: "Chat server is running",
     connectedUsers,
+    version: SERVER_VERSION,
   });
 });
 
