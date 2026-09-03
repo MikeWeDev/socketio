@@ -8,6 +8,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:5173";
 const SERVER_VERSION = "1.0.0";
+const SERVER_ENV = process.env.NODE_ENV || "development";
 
 let connectedUsers = 0;
 
