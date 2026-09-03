@@ -50,8 +50,10 @@ const io = new Server(server, {
 
 io.on("connection", (socket) => {
   connectedUsers++;
+  const joinTime = new Date().toISOString();
 
   console.log("User connected:", socket.id);
+  console.log(`User joined at: ${joinTime}`);
 
   io.emit("online-users", connectedUsers);
 
