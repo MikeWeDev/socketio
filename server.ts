@@ -65,6 +65,7 @@ io.on("connection", (socket) => {
     }
 
     socket.data.username = trimmedUsername;
+    socket.data.joinedAt = Date.now();
 
     io.emit("message", {
       username: "System",
@@ -119,6 +120,13 @@ io.on("connection", (socket) => {
         username: socket.data.username,
         isTyping: false,
       });
+    }
+
+        console.log("User disconnected:", socket.id);
+
+    if (socket.data.joinedAt) {
+      const sessionDuration = Date.now() - socket.data.joinedAt;
+      console.log(`User session duration: ${sessionDuration}ms`);
     }
 
     console.log("User disconnected:", socket.id);
