@@ -122,14 +122,12 @@ io.on("connection", (socket) => {
       });
     }
 
-        console.log("User disconnected:", socket.id);
+    console.log("User disconnected:", socket.id);
 
     if (socket.data.joinedAt) {
       const sessionDuration = Date.now() - socket.data.joinedAt;
       console.log(`User session duration: ${sessionDuration}ms`);
     }
-
-    console.log("User disconnected:", socket.id);
   });
 });
 
