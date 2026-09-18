@@ -1,11 +1,14 @@
 import express from "express";
 import http from "http";
-import { Server, Socket } from "socket.io";
+import { Server } from "socket.io";
 import cors from "cors";
 
-interface SocketData {
-  username?: string;
-  joinedAt?: number;
+interface Message {
+  username: string;
+  text?: string;
+  time?: string;
+  system?: boolean;
+  [key: string]: any;
 }
 
 const app = express();
@@ -53,7 +56,7 @@ const io = new Server(server, {
   },
 });
 
-io.on("connection", (socket: Socket<SocketData>) => {
+io.on("connection", (socket) => {
   connectedUsers++;
   const joinTime = new Date().toISOString();
 
@@ -83,7 +86,7 @@ io.on("connection", (socket: Socket<SocketData>) => {
     });
   });
 
-  socket.on("message", (message) => {
+  socket.on("message", (message: Message) => {
     if (!message || typeof message !== "object") {
       return;
     }
