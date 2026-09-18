@@ -1,7 +1,12 @@
 import express from "express";
 import http from "http";
-import { Server } from "socket.io";
+import { Server, Socket } from "socket.io";
 import cors from "cors";
+
+interface SocketData {
+  username?: string;
+  joinedAt?: number;
+}
 
 const app = express();
 
@@ -48,7 +53,7 @@ const io = new Server(server, {
   },
 });
 
-io.on("connection", (socket) => {
+io.on("connection", (socket: Socket<SocketData>) => {
   connectedUsers++;
   const joinTime = new Date().toISOString();
 
@@ -80,6 +85,11 @@ io.on("connection", (socket) => {
 
   socket.on("message", (message) => {
     if (!message || typeof message !== "object") {
+      return;
+    }
+
+    // Check if user has joined
+    if (!socket.data.username) {
       return;
     }
 
